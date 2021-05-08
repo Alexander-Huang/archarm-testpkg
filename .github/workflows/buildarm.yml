@@ -44,10 +44,10 @@ jobs:
                   fi
                   mkdir -p /mnt/onedrive
                   if [[ `ls` == *"-aarch64.pkg"* ]];then
-                    rclone move one:/arch-repo/aarch64/ one:/arch-archive/  --include "${pkg}-*.pkg.tar.zst"
-                    rclone move one:/arch-repo/aarch64/ ./ --exclude "*.tar.zst"
-                    repo-add ./coal.db.tar.gz ./*.pkg.tar.zst
-                    for p in `ls *.pkg.tar.zst`
+                    rclone move one:/arch-repo/aarch64/ one:/arch-archive/  --include "${pkg}-*.pkg.tar.xz"
+                    rclone move one:/arch-repo/aarch64/ ./ --exclude "*.tar.xz"
+                    repo-add ./coal.db.tar.gz ./*.pkg.tar.xz
+                    for p in `ls *.pkg.tar.xz`
                     do
                       rclone move ./${p} one:/arch-repo/aarch64/
                     done
