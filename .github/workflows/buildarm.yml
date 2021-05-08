@@ -15,24 +15,15 @@ jobs:
           distribution: archlinuxarm
           run: |
             echo "container is ready."
-      - name: Prepare environment
-        run:  yes $'\n'|pacman -Syu base-devel unzip p7zip busybox rclone git
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Prepare user for pkgbuild
-        run:  |
-               useradd -m build
-               chown -R build ./*
-               echo "build ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-      - name: Prepare rclone
-        run:  |
-               mkdir -p ~/.config/rclone/
-               touch ~/.config/rclone/rclone.conf
-               echo -e '${{secrets.ONEDRIVE_CONFIG}}' >> ~/.config/rclone/rclone.conf
-      - name: PkgBuild
-        run:  |
-               for pkg in `cat need-update`
-               do
+            yes $'\n'|pacman -Syu base-devel unzip p7zip busybox rclone git
+            useradd -m build
+            chown -R build ./*
+            echo "build ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+            mkdir -p ~/.config/rclone/
+            touch ~/.config/rclone/rclone.conf
+            echo -e '${{secrets.ONEDRIVE_CONFIG}}' >> ~/.config/rclone/rclone.conf
+            for pkg in `cat need-update`
+              do
                  pwd
                  cd pkgbuild/"${pkg}"/
                  if [ -f "./aur" ];then
@@ -68,7 +59,7 @@ jobs:
                     echo "Skipping:No packages found."
                   fi
                   echo "Upload finished"
-                  done
+              done
   rm-update:
     runs-on: ubuntu-latest
     needs: aarch64_job
