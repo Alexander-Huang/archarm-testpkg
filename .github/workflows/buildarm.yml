@@ -71,7 +71,7 @@ jobs:
                   done
   rm-update:
     runs-on: ubuntu-latest
-    needs: build
+    needs: aarch64_job
     steps:
       - uses: actions/checkout@v2
       - name: Remove need-update
