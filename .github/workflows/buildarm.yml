@@ -12,7 +12,7 @@ jobs:
         id: runcmd
         with:
           architecture: aarch64
-          distribution: ubuntu18.04
+          distribution: archlinuxarm
           run: |
             uname -a
             echo ::set-output name=uname::$(uname -a)
