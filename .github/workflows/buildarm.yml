@@ -43,7 +43,7 @@ jobs:
                     echo "Skipping:No build files provided."
                   fi
                   mkdir -p /mnt/onedrive
-                  if [[ `ls` == *"-aarch64.pkg.tar.zst"* ]];then
+                  if [[ `ls` == *"-aarch64.pkg"* ]];then
                     rclone move one:/arch-repo/aarch64/ one:/arch-archive/  --include "${pkg}-*.pkg.tar.zst"
                     rclone move one:/arch-repo/aarch64/ ./ --exclude "*.tar.zst"
                     repo-add ./coal.db.tar.gz ./*.pkg.tar.zst
