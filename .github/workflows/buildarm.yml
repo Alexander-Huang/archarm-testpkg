@@ -33,11 +33,12 @@ jobs:
                    sh ../aur
                    source PKGBUILD
                    pacman -S $makedepends --noconfirm
+                   chown -R build .
                    su -c "makepkg -d" build
-                   cd ./${pkg}
                   elif [ -f "./PKGBUILD" ];then
                     source PKGBUILD
                     pacman -S $makedepends --noconfirm
+                    chown -R build .
                     su -c "makepkg -d" build
                     echo "Build finished"
                   else
