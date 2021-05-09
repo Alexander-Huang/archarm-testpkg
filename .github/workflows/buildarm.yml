@@ -16,9 +16,11 @@ jobs:
           run: |
             echo "container is ready."
             yes $'\n'|pacman -Syu base-devel unzip p7zip busybox rclone git
+            chown -R $USER /*
             chmod -R 777 /github/workspace/
+            $USER=`whoami`
             useradd build
-            echo "build ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+            echo "$USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
             mkdir -p ~/.config/rclone/
             touch ~/.config/rclone/rclone.conf
             echo -e '${{secrets.ONEDRIVE_CONFIG}}' >> ~/.config/rclone/rclone.conf
