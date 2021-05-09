@@ -19,7 +19,8 @@ jobs:
             chown -R $USER /*
             chmod -R 777 /github/workspace/
             $USER=`whoami`
-            useradd build
+            mkdir -p /home/build
+            useradd -d /home/build build
             echo "$USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
             mkdir -p ~/.config/rclone/
             touch ~/.config/rclone/rclone.conf
@@ -49,9 +50,7 @@ jobs:
                     rclone move one:/arch-repo/aarch64/ one:/arch-archive/  --include "${pkg}-*.pkg.tar.xz"
                     rclone move one:/arch-repo/aarch64/ ./ --exclude "*.tar.xz"
                     repo-add ./coal.db.tar.gz ./*.pkg.tar.xz
-                    if [ -f "coal.db"];then
-                      rm -r coal.db coal.files
-                    fi
+                    rm -r coal.db coal.files
                     cp coal.db.tar.gz coal.db
                     cp coal.files.tar.gz coal.files
                     for p in `ls *.pkg.tar.xz`
