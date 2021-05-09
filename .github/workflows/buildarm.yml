@@ -16,28 +16,27 @@ jobs:
           run: |
             echo "container is ready."
             yes $'\n'|pacman -Syu base-devel unzip p7zip busybox rclone git
-            useradd -m build
-            chown -R build ./*
+            chmod -R 777 /github/workspace/
+            useradd build
             echo "build ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
             mkdir -p ~/.config/rclone/
             touch ~/.config/rclone/rclone.conf
             echo -e '${{secrets.ONEDRIVE_CONFIG}}' >> ~/.config/rclone/rclone.conf
             for pkg in `cat need-update`
               do
-                 pwd
-                 cd pkgbuild/"${pkg}"/
+                 cd /github/workspace/pkgbuild/"${pkg}"/
                  if [ -f "./aur" ];then
-                   su -c "git clone https://aur.archlinux.org/${pkg}.git 
-                          cd ./${pkg}
-                          sh ../aur
-                          source PKGBUILD
-                          pacman -S $makedepends --noconfirm
-                         makepkg -d" build
+                   git clone https://aur.archlinux.org/${pkg}.git 
+                   cd ./${pkg}
+                   sh ../aur
+                   source PKGBUILD
+                   pacman -S $makedepends --noconfirm
+                   su -c "makepkg -d" build
                    cd ./${pkg}
                   elif [ -f "./PKGBUILD" ];then
-                    su -c "source PKGBUILD
-                           pacman -S $makedepends --noconfirm
-                           makepkg -d" build
+                    source PKGBUILD
+                    pacman -S $makedepends --noconfirm
+                    su -c "makepkg -d" build
                     echo "Build finished"
                   else
                     echo "Skipping:No build files provided."
@@ -47,6 +46,11 @@ jobs:
                     rclone move one:/arch-repo/aarch64/ one:/arch-archive/  --include "${pkg}-*.pkg.tar.xz"
                     rclone move one:/arch-repo/aarch64/ ./ --exclude "*.tar.xz"
                     repo-add ./coal.db.tar.gz ./*.pkg.tar.xz
+                    if [ -f "coal.db"];then
+                      rm -r coal.db coal.files
+                    fi
+                    cp coal.db.tar.gz coal.db
+                    cp coal.files.tar.gz coal.files
                     for p in `ls *.pkg.tar.xz`
                     do
                       rclone move ./${p} one:/arch-repo/aarch64/
