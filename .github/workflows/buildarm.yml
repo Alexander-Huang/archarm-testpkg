@@ -31,18 +31,20 @@ jobs:
                    sh ../aur
                    source PKGBUILD
                    pacman -S $makedepends --noconfirm
-                   chown -R build /*
+                   chown -R build /home/build
+                   chown -R build /github
                    su -c "makepkg -d" build
                   elif [ -f "./PKGBUILD" ];then
                     source PKGBUILD
                     pacman -S $makedepends --noconfirm
-                    chown -R build /*
+                    chown -R build /home/build
+                    chown -R build /github
                     su -c "makepkg -d" build
                     echo "Build finished"
                   else
                     echo "Skipping:No build files provided."
                   fi
-                  chown -R `whoami` /*
+                  chown -R `whoami` /github
                   mkdir -p /mnt/onedrive
                   if [[ `ls` == *"-aarch64.pkg"* ]];then
                     rclone move one:/arch-repo/aarch64/ one:/arch-archive/  --include "${pkg}-*.pkg.tar.xz"
