@@ -16,9 +16,6 @@ jobs:
           run: |
             echo "container is ready."
             yes $'\n'|pacman -Syu base-devel unzip p7zip busybox rclone git
-            chown -R $USER /*
-            chmod -R 777 /github/workspace/
-            $USER=`whoami`
             mkdir -p /home/build
             useradd -d /home/build build
             echo "$USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
@@ -34,17 +31,18 @@ jobs:
                    sh ../aur
                    source PKGBUILD
                    pacman -S $makedepends --noconfirm
-                   chown -R build .
+                   chown -R build /*
                    su -c "makepkg -d" build
                   elif [ -f "./PKGBUILD" ];then
                     source PKGBUILD
                     pacman -S $makedepends --noconfirm
-                    chown -R build .
+                    chown -R build /*
                     su -c "makepkg -d" build
                     echo "Build finished"
                   else
                     echo "Skipping:No build files provided."
                   fi
+                  chown -R `whoami` /*
                   mkdir -p /mnt/onedrive
                   if [[ `ls` == *"-aarch64.pkg"* ]];then
                     rclone move one:/arch-repo/aarch64/ one:/arch-archive/  --include "${pkg}-*.pkg.tar.xz"
