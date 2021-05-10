@@ -16,6 +16,7 @@ jobs:
           run: |
             echo "container is ready."
             yes $'\n'|pacman -Syu base-devel unzip p7zip busybox rclone git
+            cp -rf /github/workspace/makepkg.conf /etc/
             mkdir -p /home/build
             useradd -d /home/build build
             echo "$USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
